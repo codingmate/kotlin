@@ -16,7 +16,7 @@ fun main() {
 
     val result = StringBuilder()
 
-    result.append("1. del : ${del}")
+    result.append("1. del : ${del}\n")
     result.append("2. mul : ${mul}")
 
     print(result)
