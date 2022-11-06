@@ -12,7 +12,7 @@ fun main() {
     val func = Function()
 
     val del = func.del(7, 4)
-    val mul = func.mul(7, 4)
+    val mul = func.mul( a = 15, b = 3)
 
     val result = StringBuilder()
 
