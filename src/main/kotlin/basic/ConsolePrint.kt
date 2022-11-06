@@ -1,10 +1,13 @@
 package basic
 
-fun main(args:List<String>) {
+class ConsolePrint{
 
-    val printList = listOf( "print : Hello World!"
+}
+fun main(args:Array<String>) {
+
+    val printList = listOf( "print : Hello World!\n"
                           , "println : Dreams Come true!"
-                          , "\n printf(\"%s\")".format("Time FLies Like An Arrow"))
+                          , "Like a printf(\"%s\")".format("Time FLies Like An Arrow"))
     print( printList[0] )
 
     println( printList[1] )
