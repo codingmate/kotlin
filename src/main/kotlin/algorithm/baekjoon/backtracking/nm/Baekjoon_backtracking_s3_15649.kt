@@ -1,4 +1,4 @@
-package algorithm.baekjoon.backtracking
+package algorithm.baekjoon.backtracking.nm
 
 import java.util.ArrayList
 

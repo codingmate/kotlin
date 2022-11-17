@@ -1,4 +1,4 @@
-package algorithm.baekjoon.backtracking
+package algorithm.baekjoon.backtracking.nm
 
 fun main() {
     val NM = readln().split(" ").map { it.toInt() }

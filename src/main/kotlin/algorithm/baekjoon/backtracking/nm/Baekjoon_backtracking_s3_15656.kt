@@ -1,4 +1,4 @@
-package algorithm.baekjoon.backtracking
+package algorithm.baekjoon.backtracking.nm
 
 import algorithm.common.joinToStringBuilder
 import algorithm.common.removeLastNewLine
@@ -11,11 +11,11 @@ fun main () {
     val numsASC = readln().split(" ").map{ it.toInt() }.sorted()
 
 
-    print( Q15657(N, M, numsASC).solution().removeLastNewLine() )
+    print( Q15656(N, M, numsASC).solution().removeLastNewLine() )
 }
 
 
-class Q15657(private val N : Int, private val M : Int, private val nums : List<Int>) {
+class Q15656(private val N : Int, private val M : Int, private val nums : List<Int>) {
     fun solution(): String {
 
         val lineNums = Array(M) { 0 }
@@ -26,12 +26,7 @@ class Q15657(private val N : Int, private val M : Int, private val nums : List<I
                 result.append(lineNums.joinToStringBuilder(separator = " ", postfix = "\n"))
                 return
             }
-
             for (next in 0 until N) {
-                if ( depth > 0
-                    && lineNums[depth-1] > nums[next]) {
-                    continue
-                }
                 lineNums[depth] = nums[next]
                 dfs(depth + 1)
             }
