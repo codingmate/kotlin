@@ -21,26 +21,40 @@ class Q16987 ( val N : Int, val eggList : List<egg> ) {
         var maxCount = 0
         fun dfs( depth : Int ) {
             if ( depth == N ) {
-                val copyEggList = ArrayList<egg>(eggList)
-                var isCounting = true
+                val copyEggList = ArrayList<egg>()
+                for ( egg in eggList )
+                    copyEggList.add(egg(egg.d, egg.w))
+
                 for ( i in 0 until N ) {
                     val holdEgg = copyEggList[i]
                     if ( holdEgg.isBroken() )
                         continue
+                    //println("$i, ${idxs[i]}")
+
                     val targetEgg = copyEggList[idxs[i]]
+
                     if ( targetEgg.isBroken() ) {
-                        isCounting = false
                         break
                     }
+                    //print("${holdEgg.d} ${holdEgg.w} /// ")
+                    //println("${targetEgg.d} ${targetEgg.w}")
                     holdEgg.d -= targetEgg.w
                     targetEgg.d -= holdEgg.w
+                    //print("${holdEgg.d} ${holdEgg.w} /// ")
+                    //println("${targetEgg.d} ${targetEgg.w}")
                 } // for : i
                 var count = 0
-                if ( isCounting ) {
-                    for ( egg in copyEggList )
-                        if ( egg.isBroken() )
-                            count++
+
+                for ( egg in copyEggList ) {
+                    //print( egg.d.toString() + " ")
+                    if( egg.isBroken() )
+                        count++
                 }
+                //println()
+
+                //val temp = StringBuilder()
+                //print(idxs.joinToString(separator = " "))
+                //println(if ( isCounting ) " !!!!" else "")
                 maxCount = if ( count > maxCount ) count else maxCount
                 return
             }
