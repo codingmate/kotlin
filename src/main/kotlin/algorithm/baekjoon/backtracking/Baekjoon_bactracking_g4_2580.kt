@@ -28,48 +28,41 @@ class Q2580 ( val sdoku : Array<IntArray> ) {
 				}
 			} // for : c
 		} // for : r
+
 		val result = StringBuilder()
-		val O_indexs = Array(OList.size) { -1 }
+		var isEnded = false
 		fun backtracking( depth : Int ) {
 
+			if ( isEnded )
+				return
 			if ( depth == OList.size) {
 				for ( obj in sdoku )
-					result.append( obj.joinToString(separator = " ", postfix = "\n") )
+					result.append( obj.joinToString(separator = " ", postfix = "\n"))
+				isEnded = true
 				return
 			}
-			val start = if ( depth == 0 ) 0 else O_indexs[depth - 1] + 1
 
-			for ( next in start until OList.size ) {
+			var executeCount = 0
+			val nextRC = OList[depth]
+			for ( num in 1 .. 9 ) {
+				if ( groupNums[nextRC.R / 3][nextRC.C / 3][num]
+						|| rowNums[nextRC.R][num]
+						|| colNums[nextRC.C][num] )
+					continue
+				executeCount++
 
-				val nextRC = OList[next]
+				sdoku[nextRC.R][nextRC.C] = num
+				groupNums[nextRC.R / 3][nextRC.C / 3][num] = true
+				rowNums[nextRC.R][num] = true
+				colNums[nextRC.C][num] = true
 
-				if ( depth + 1 < OList.size )
-					O_indexs[depth + 1] = next
-				var executeCount = 0
-				for ( num in 1 .. 9 ) {
-					if ( groupNums[nextRC.R / 3][nextRC.C / 3][num]
-							|| rowNums[nextRC.R][num]
-							|| colNums[nextRC.C][num] )
-						continue
-					executeCount++
-					val temp = sdoku[nextRC.R][nextRC.C]
+				backtracking(depth + 1)
 
-					sdoku[nextRC.R][nextRC.C] = num
-					groupNums[nextRC.R / 3][nextRC.C / 3][num] = true
-					rowNums[nextRC.R][num] = true
-					colNums[nextRC.C][num] = true
-
-					backtracking(depth + 1)
-
-					sdoku[nextRC.R][nextRC.C] = temp
-					groupNums[nextRC.R / 3][nextRC.C / 3][num] = false
-					rowNums[nextRC.R][num] = false
-					colNums[nextRC.C][num] = false
-				} // for : num
-				if (executeCount == 0)
-					return
-
-			} // for : next
+				sdoku[nextRC.R][nextRC.C] = 0
+				groupNums[nextRC.R / 3][nextRC.C / 3][num] = false
+				rowNums[nextRC.R][num] = false
+				colNums[nextRC.C][num] = false
+			} // for : num
 		}
 
 		backtracking(0)
