@@ -1,4 +1,4 @@
-package algorithm.bfs
+package algorithm.baekjoon.bfs
 
 import java.util.*
 
