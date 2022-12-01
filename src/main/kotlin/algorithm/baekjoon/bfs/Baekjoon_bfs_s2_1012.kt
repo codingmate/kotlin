@@ -2,16 +2,17 @@ package algorithm.baekjoon.bfs
 
 import java.util.LinkedList
 
-val T = readln().toInt()
+
 
 fun main() {
-	print(Q1012().solution())
+	val T = readln().toInt()
+	print(Q1012().solution(T))
 }
 
 data class Dot( val r: Int, val c: Int )
 
 class Q1012 {
-	fun solution(): String {
+	fun solution(T: Int): String {
 		val result = StringBuilder()
 		val q = LinkedList<Dot>()
 
