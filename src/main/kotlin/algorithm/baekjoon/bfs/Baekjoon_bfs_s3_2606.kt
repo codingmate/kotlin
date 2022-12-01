@@ -2,12 +2,11 @@ package algorithm.baekjoon.bfs
 
 import java.util.LinkedList
 
-val N = readln().toInt()
-val M = readln().toInt()
-val matrix = Array(N + 1) { IntArray(N + 1) }
-val visits = BooleanArray(N + 1)
-
 fun main() {
+	val N = readln().toInt()
+	val M = readln().toInt()
+	val matrix = Array(N + 1) { IntArray(N + 1) }
+
 	for ( row in 0 until M ) {
 		val rc = readln().split(" ")
 		val r = rc[0].toInt()
@@ -15,14 +14,15 @@ fun main() {
 		matrix[r][c] = 1
 		matrix[c][r] = 1
 	}
-	print( Q2606().solution() )
+	print( Q2606().solution(N, M, matrix) )
 
 }
 
 class Q2606 {
-	fun solution(): Int {
+	fun solution(N:Int, M:Int, matrix: Array<IntArray>): Int {
 		val q = LinkedList<Int>()
 		q.add(1)
+		val visits = BooleanArray(N + 1)
 
 		while( q.size > 0 ) {
 			val from = q[0]
