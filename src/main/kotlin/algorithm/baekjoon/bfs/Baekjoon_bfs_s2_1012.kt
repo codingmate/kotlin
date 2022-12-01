@@ -9,9 +9,10 @@ fun main() {
 	print(Q1012().solution(T))
 }
 
-data class Dot( val r: Int, val c: Int )
+
 
 class Q1012 {
+	data class Dot( val r: Int, val c: Int )
 	fun solution(T: Int): String {
 		val result = StringBuilder()
 		val q = LinkedList<Dot>()
