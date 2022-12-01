@@ -38,7 +38,7 @@ class Q7576 {
 					}
 					-1 -> {
 						visits[r][c] = true
-						costMatrix[r][c] = 0
+						costMatrix[r][c] = -1
 					}
 				}
 
@@ -68,10 +68,11 @@ class Q7576 {
 		//	println(obj.joinToString())
 
 		for ( r in 0 until R )
-			for ( c in 0 until C )
+			for ( c in 0 until C ) {
+				if ( costMatrix[r][c] == 0 )
+					return -1
 				result = maxOf(result, costMatrix[r][c])
-
-
+			}
 		return result - 1
 	}
 
