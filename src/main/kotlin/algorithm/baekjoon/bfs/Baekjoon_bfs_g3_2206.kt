@@ -22,36 +22,46 @@ class Q2206 {
 		val dr = arrayOf(0, 0, 1, -1)
 		val dc = arrayOf(1, -1, 0, 0)
 		val list1 = ArrayList<Dot>()
-		val visits = Array(R) { BooleanArray(C) }
+
 		for ( r in 0 until R )
 			for ( c in 0 until C )
 				if ( matrix[r][c] == 1 ) {
 					list1.add(Dot(r, c))
-					visits[r][c] = true
 				}
 
 		fun bfs(): Int{
 			val costMatrix = Array(R) { IntArray(C) }
+			val breakMatrix = Array(R) { IntArray(C) }
 			costMatrix[0][0] = 1
 			costMatrix[R-1][C-1] = -1
 			val q = LinkedList<Dot>()
 
 			q.add(Dot(0, 0))
-			visits[0][0] = true
 			while ( q.size > 0 ) {
 				val from = q[0]
 				q.removeFirst()
+				val fromCost = costMatrix[from.r][from.c]
+				val fromBreak = breakMatrix[from.r][from.c]
 				for ( i in dr.indices ) {
 					val nr = from.r + dr[i]
 					val nc = from.c + dc[i]
-					if ( nr < 0 || nc < 0 || nr >= R || nc >= C || visits[nr][nc] )
+					if ( nr < 0 || nc < 0 || nr >= R || nc >= C )
 						continue
+
+					val toBreak = fromBreak + matrix[nr][nc]
+					if ( toBreak > 1 )
+						continue
+
+					val toCost = fromCost + 1
 					val to = Dot(nr, nc)
+					if ( fromBreak == toBreak && costMatrix[to.r][to.c] > 0 && toCost > costMatrix[to.r][to.c] )
+						continue
+
 					q.add(to)
-					visits[to.r][to.c] = true
-					costMatrix[to.r][to.c] = costMatrix[from.r][from.c] + 1
+					costMatrix[to.r][to.c] = toCost
+					breakMatrix[to.r][to.c] = toBreak
 				}
-			}
+			} // while : q
 			//for ( obj in costMatrix ) {
 			//	println(obj.joinToString())
 			//}
@@ -59,21 +69,6 @@ class Q2206 {
 		} // fun : bfs
 
 		var minDist = bfs()
-
-		for ( e1 in list1 ) {
-			for ( r in 0 until R )
-				for ( c in 0 until C )
-						visits[r][c] = matrix[r][c] == 1
-			visits[e1.r][e1.c] = false
-			val dist = bfs()
-			//println(" minDist : $minDist, dist : $dist")
-			when {
-				minDist == -1 && dist > -1 -> minDist = dist
-				minDist > -1 && dist > -1 -> minDist = minOf(minDist, dist)
-			}
-
-			visits[e1.r][e1.c] = true
-		}
 
 		return minDist
 	}
