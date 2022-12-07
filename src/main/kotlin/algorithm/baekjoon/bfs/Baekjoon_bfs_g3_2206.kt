@@ -68,8 +68,6 @@ class Q2206 {
 			return costMatrix[R-1][C-1]
 		} // fun : bfs
 
-		var minDist = bfs()
-
-		return minDist
+		return bfs()
 	}
 }
