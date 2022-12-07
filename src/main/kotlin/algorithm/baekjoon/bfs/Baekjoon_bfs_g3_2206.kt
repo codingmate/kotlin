@@ -19,16 +19,36 @@ fun main() {
 class Q2206 {
 	fun solution( R: Int, C: Int, matrix:Array<IntArray> ): Int {
 		data class Dot(val r: Int, val c: Int)
+
 		val dr = arrayOf(0, 0, 1, -1)
 		val dc = arrayOf(1, -1, 0, 0)
-		val list1 = ArrayList<Dot>()
 
-		for ( r in 0 until R )
-			for ( c in 0 until C )
-				if ( matrix[r][c] == 1 ) {
-					list1.add(Dot(r, c))
+		fun noBreakBfs(): Int{
+			val visits = Array(R) { BooleanArray(C) }
+			val costMatrix = Array(R) { IntArray(C) }
+			val q = LinkedList<Dot>()
+			q.add(Dot(0, 0))
+			visits[0][0] = true
+			costMatrix[0][0] = 1
+			costMatrix[R-1][C-1] = -1
+
+			while ( q.size > 0 ) {
+				val from = q[0]
+				q.removeFirst()
+
+				for ( i in dr.indices ) {
+					val nR = from.r + dr[i]
+					val nC = from.c + dc[i]
+					if ( nR < 0 || nC < 0 || nR >= R || nC >= C || visits[nR][nC] || matrix[nR][nC] == 1)
+						continue
+					val to = Dot(nR, nC)
+					q.add(to)
+					costMatrix[to.r][to.c] = costMatrix[from.r][from.c] + 1
+					visits[to.r][to.c] = true
 				}
-
+			}
+			return costMatrix[R-1][C-1]
+ 		}
 		fun bfs(): Int{
 			val costMatrix = Array(R) { IntArray(C) }
 			val breakMatrix = Array(R) { IntArray(C) }
@@ -48,26 +68,36 @@ class Q2206 {
 					if ( nr < 0 || nc < 0 || nr >= R || nc >= C )
 						continue
 
-					val toBreak = fromBreak + matrix[nr][nc]
-					if ( toBreak > 1 )
+					if ( fromBreak + matrix[nr][nc] > 1 )
 						continue
 
-					val toCost = fromCost + 1
 					val to = Dot(nr, nc)
-					if ( fromBreak == toBreak && costMatrix[to.r][to.c] > 0 && toCost > costMatrix[to.r][to.c] )
+					if ( fromBreak == breakMatrix[to.r][to.c] && costMatrix[to.r][to.c] > 0 && fromCost + 1 > costMatrix[to.r][to.c] )
 						continue
 
 					q.add(to)
-					costMatrix[to.r][to.c] = toCost
+					val toBreak = fromBreak + matrix[nr][nc]
+					costMatrix[to.r][to.c] = fromCost + 1
 					breakMatrix[to.r][to.c] = toBreak
 				}
+				for ( r in 0 until R )
+					println("${costMatrix[r].joinToString()} || ${breakMatrix[r].joinToString()}")
+				println()
 			} // while : q
-			//for ( obj in costMatrix ) {
-			//	println(obj.joinToString())
-			//}
+
 			return costMatrix[R-1][C-1]
 		} // fun : bfs
 
-		return bfs()
+		var minDist = noBreakBfs()
+		val dist = bfs()
+
+		when {
+			minDist > 0 && dist > 0 -> minDist = minOf(minDist, dist)
+			minDist == -1 -> minDist = dist
+		}
+
+
+
+		return minDist
 	}
 }
