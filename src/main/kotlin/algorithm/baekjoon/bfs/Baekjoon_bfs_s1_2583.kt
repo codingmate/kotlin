@@ -60,6 +60,6 @@ class Q2583 {
 
 
 		countList.sort()
-		return countList.joinToString(separator = " ")
+		return "${countList.size}\n${countList.joinToString(separator = " ")}"
 	}
 }
