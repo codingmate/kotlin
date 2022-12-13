@@ -28,13 +28,19 @@ class Q16236 {
 		for ( r in 0 until R )
 			for ( c in 0 until C )
 				when (val value = matrix[r][c]) {
-					9 -> shark = Dot(r, c, 2)
+					9 -> {
+						shark = Dot(r, c, 2)
+						matrix[r][c] = 0
+					}
 					0 -> {}
 					else -> fishs.add( Dot( r, c, value ) )
 				}
 
 		var eatCount = 0
 		var totalDistance = 0
+
+		val dr = arrayOf(-1, 0, 0, 1)
+		val dc = arrayOf(0, -1, 1, 0)
 		while (fishs.any { it.size < shark.size }) {
 
 			fishs.sortWith{ f1, f2 ->
@@ -48,22 +54,43 @@ class Q16236 {
 				else
 					f1Dist - f2Dist
 			}
-			eatCount++
-			if ( eatCount == shark.size ) {
-				shark.size++
-				eatCount = 0
-			}
-			var index = 0
-			while( fishs[index].size >= shark.size ) {
-				index++
-			}
-			val fish = fishs[index]
+			for ( fish in fishs )
+				if ( fish.size < shark.size ) {
+					val q = LinkedList<Dot>()
+					val visits = Array(R) { BooleanArray(C) }
+					val costs = Array(R) { IntArray(C) }
+					visits[shark.r][shark.c] = true
 
-			totalDistance += abs(fish.r - shark.r) + abs ( fish.c - shark.c )
-			shark.r = fish.r
-			shark.c = fish.c
-			fishs.removeFirst()
-		}
+					q.add(shark)
+					while ( q.size > 0 ) {
+						val from = q[0]
+						q.removeFirst()
+						for ( i in dr.indices ) {
+							val nextR = from.r + dr[i]
+							val nextC = from.c + dc[i]
+							if ( nextR < 0 || nextC < 0 || nextR >= R || nextC >= C || shark.size < matrix[nextR][nextC] )
+								continue
+							visits[nextR][nextC] = true
+							costs[nextR][nextC] = costs[from.r][from.c] + 1
+							q.add(Dot(nextR, nextC, 0))
+						}
+						if ( costs[fish.r][fish.c] > 0 ) {
+							totalDistance += costs[fish.r][fish.c]
+							shark.r = fish.r
+							shark.c = fish.c
+							fishs.remove(fish)
+							println("$shark :: $fish")
+							eatCount++
+							if ( eatCount == shark.size ) {
+								shark.size++
+								println("changed !!! :: $shark")
+								eatCount = 0
+							}
+							break
+						} // if
+					} // while
+				} // if
+		} // while
 
 		return totalDistance
 	}
