@@ -19,78 +19,71 @@ class Q16236 {
 	fun solution( N: Int, matrix: Array<IntArray> ): Int {
 		data class Dot(var r: Int, var c: Int, var size: Int)
 
-		val fishs = LinkedList<Dot>()
-
 		val R = N
 		val C = N
 		var shark = Dot(0, 0, 0)
-
+		val fishs = LinkedList<Dot>()
 		for ( r in 0 until R )
 			for ( c in 0 until C )
-				when (val value = matrix[r][c]) {
-					9 -> {
+				when ( matrix[r][c] ) {
+					0    -> {}
+					9    -> {
 						shark = Dot(r, c, 2)
 						matrix[r][c] = 0
 					}
-					0 -> {}
-					else -> fishs.add( Dot( r, c, value ) )
+					else -> fishs.add(Dot(r, c, matrix[r][c]))
 				}
 
-		var eatCount = 0
+
 		var totalDistance = 0
-
-		val dr = arrayOf(-1, 0, 0, 1)
+		var eatCount = 0
+		val dr = arrayOf(-1, 0, 0, 1) // 위, 왼, 우, 밑 순서
 		val dc = arrayOf(0, -1, 1, 0)
-		while (fishs.any { it.size < shark.size }) {
+		while (fishs.any { it.size < shark.size }) { // 먹을 수 있는 물고기가 남아있는가
+			val q = LinkedList<Dot>()
+			val costs = Array(R) { IntArray(C) { -1 } }
+			q.add(shark)
+			costs[shark.r][shark.c] = 0
 
-			fishs.sortWith{ f1, f2 ->
-				val f1Dist = abs(f1.r - shark.r) + abs(f1.c - shark.c)
-				val f2Dist = abs(f2.r - shark.r) + abs(f2.c - shark.c)
-				if ( f1Dist == f2Dist )
-					if ( f1.r - f2.r == 0 )
-						f1.c - f2.c
-					else
-						f1.r - f2.r
-				else
-					f1Dist - f2Dist
-			}
-			for ( fish in fishs )
-				if ( fish.size < shark.size ) {
-					val q = LinkedList<Dot>()
-					val visits = Array(R) { BooleanArray(C) }
-					val costs = Array(R) { IntArray(C) }
-					visits[shark.r][shark.c] = true
+			var foundFish = false
+			while ( q.size > 0 && !foundFish ) {
 
-					q.add(shark)
-					while ( q.size > 0 ) {
-						val from = q[0]
-						q.removeFirst()
-						for ( i in dr.indices ) {
-							val nextR = from.r + dr[i]
-							val nextC = from.c + dc[i]
-							if ( nextR < 0 || nextC < 0 || nextR >= R || nextC >= C || shark.size < matrix[nextR][nextC] )
-								continue
-							visits[nextR][nextC] = true
-							costs[nextR][nextC] = costs[from.r][from.c] + 1
-							q.add(Dot(nextR, nextC, 0))
-						}
-						if ( costs[fish.r][fish.c] > 0 ) {
-							totalDistance += costs[fish.r][fish.c]
-							shark.r = fish.r
-							shark.c = fish.c
-							fishs.remove(fish)
-							println("$shark :: $fish")
-							eatCount++
-							if ( eatCount == shark.size ) {
-								shark.size++
-								println("changed !!! :: $shark")
-								eatCount = 0
+				val from = q[0]
+				q.removeFirst()
+				for ( i in dr.indices ) {
+					val toR = from.r + dr[i]
+					val toC = from.c + dc[i]
+					if ( toR < 0 || toC < 0 || toR >= R || toC >= C || costs[toR][toC] > -1 || matrix[toR][toC] > shark.size )
+						continue
+					costs[toR][toC] = costs[from.r][from.c] + 1
+					
+					if ( matrix[toR][toC] > 0
+							&& shark.size > matrix[toR][toC] ) { // 다음 칸에 먹을 수 있는 물고기가 있을 경우
+						for ( i in fishs.indices ) { // 먹을 물고기 제거
+							val fish = fishs[i]
+							if ( fish.r == toR && fish.c == toC ) {
+								fishs.remove(fish)
+								break
 							}
-							break
-						} // if
-					} // while
-				} // if
+						}
+						matrix[toR][toC] = 0
+						totalDistance += costs[toR][toC]
+
+						if ( ++eatCount == shark.size ) {
+							eatCount = 0
+							shark.size++
+						}
+						shark.r = toR
+						shark.c = toC
+						foundFish = true
+						break
+					} else if ( matrix[toR][toC] == 0 )
+						q.add(Dot(toR, toC, 0))
+				}
+			}
 		} // while
+
+
 
 		return totalDistance
 	}
