@@ -76,12 +76,17 @@ class Q16236 {
 					costs[toR][toC] = toCost
 				} // for
 				q.sortWith { a1, a2 ->
-					if ( costs[a1.r][a1.c] == costs[a2.r][a2.c] )
-						if ( a1.r == a2.r )
+					if ( costs[a1.r][a1.c] == costs[a2.r][a2.c] ) {
+						if ( matrix[a1.r][a1.c] < sharkSize && matrix[a2.r][a2.c] >= sharkSize )
+							1
+						else if ( matrix[a1.r][a1.c] >= sharkSize && matrix[a2.r][a2.c] < sharkSize )
+							-1
+						else if ( a1.r == a2.r )
 							a1.c - a2.c
 						else
 							a1.r - a2.r
-					else
+
+					} else
 						costs[a1.r][a1.c] - costs[a2.r][a2.c]
 				}
 			} // while
