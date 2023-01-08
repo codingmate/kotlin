@@ -12,7 +12,7 @@ class Q12865 {
 		data class Weight( var w: Int, var v: Int ) {}
 
 		val weights = Array(N) { Weight(0, 0) }
-		for ( weight in Weights ) {
+		for ( weight in weights ) {
 			val wv = readln().split(" ").map { it.toInt() }
 			weight.w = wv[0]
 			weight.v = wv[1]
@@ -33,8 +33,8 @@ class Q12865 {
 				dp[i].w = weight.w
 
 			for ( j in 0 until i ) {
-				if ( dp[j].w + weight.w <= K && dp[] ) {
-
+				if ( dp[j].w + weight.w <= K ) {
+					// ing
 				}
 			}
 		}
